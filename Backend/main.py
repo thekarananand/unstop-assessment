@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import redis 
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from utils import BookInSingleRow, BookFullCluster, BookLargerCluster
@@ -14,6 +15,8 @@ app.add_middleware(
     allow_methods=["POST"],
     allow_headers=["*"],
 )
+
+r = redis.Redis(host='')
 
 class DataScheme(BaseModel):
     SeatsNeeded: int
