@@ -1,11 +1,8 @@
 from fastapi import FastAPI
-import redis 
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from utils import BookInSingleRow, BookFullCluster, BookLargerCluster
-
-state = [ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 3 ]
-# state =   [ 3, 2, 1, 0, 1, 2, 1, 0, 0, 2, 0, 3 ]
+from firebase_utils import getState, getInitialState, setState
 
 app = FastAPI()
 app.add_middleware(
@@ -16,38 +13,38 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-r = redis.Redis(host='')
-
 class DataScheme(BaseModel):
     SeatsNeeded: int
 
 @app.get("/reset/")
 async def reset():
-    global state
-    state = [ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 3 ]
+
+    state = getInitialState()
+    setState(state)
+
     return { 
         "Booked" : [],
-        "State"  : state
+        "State"  : getState()
     }
 
 @app.post("/")
 async def index(RequestBody: DataScheme):
 
-    global state
+    state = getState()
     n = RequestBody.SeatsNeeded
 
     if not ( 1 <= n and n <= 7 ):
         return {
             "Message": f'{n} is out of bound input',
             "Booked" : [],
-            "State"  : state
+            "State"  : getState()
         }
     
     if ( sum(state) < n ):
         return {
             "Message": "We don't have Required Capacity",
             "Booked" : [],
-            "State"  : state
+            "State"  : getState()
         }
     
     # Check for Rows with Requested Capacity.
@@ -63,12 +60,12 @@ async def index(RequestBody: DataScheme):
     # Assigning Seats, if a Row with Requested Capacity is found.
     if ( suitable_row != -1 ):
         
-        [ state, booked ] = BookInSingleRow(state=state, row=suitable_row, seats=n)
+        booked = BookInSingleRow(row=suitable_row, seats=n)
 
         return { 
             "Message": "Yay! Seats Booked",
             "Booked" : booked,
-            "State"  : state
+            "State"  : getState()
         }
     
     # Assigning Seats, in multiple Rows.
@@ -76,7 +73,7 @@ async def index(RequestBody: DataScheme):
         clusters = {}
         prefix_sum = 0
         begin = -1
-        
+
         for row in range(len(state)):
             prefix_sum += state[row]
             if begin == -1 and state[row] != 0:
@@ -92,12 +89,12 @@ async def index(RequestBody: DataScheme):
         for cluster in clusters:
             if (clusters[cluster] == n):
 
-                [ state, booked ] = BookFullCluster(state=state, cluster=cluster)
+                booked = BookFullCluster(cluster=cluster)
 
                 return { 
-                    "Message": "Yay! Seats Booked",
+                    "Message": "Yay! Seats Booked 2",
                     "Booked" : booked,
-                    "State"  : state
+                    "State"  : getState()
                 }
             
             elif (clusters[cluster] > n):
@@ -108,12 +105,12 @@ async def index(RequestBody: DataScheme):
             
         if (suitable_single_cluster != -1):
 
-            [ state, booked ] = BookLargerCluster(state=state, cluster=suitable_single_cluster, seats=n)
+            booked = BookLargerCluster(cluster=suitable_single_cluster, seats=n)
 
             return { 
-                "Message": "Yay! Seats Booked",
+                "Message": "Yay! Seats Booked 3",
                 "Booked" : booked,
-                "State"  : state
+                "State"  : getState()
             }
 
         # Assign Seats in More then one clusters
@@ -124,19 +121,19 @@ async def index(RequestBody: DataScheme):
             for cluster in clusters:
                 if ( clusters[cluster] <= m):
                     m -= clusters[cluster]
-                    [ state, subset_booked ] = BookFullCluster(state=state, cluster=cluster)
-                    booked.extend(subset_booked)
+                    newSeats = BookFullCluster(cluster=cluster)
+                    booked.extend(newSeats)
                 else:
-                    [ state, subset_booked ] = BookLargerCluster(state=state, cluster=cluster, seats=m)
+                    newSeats = BookLargerCluster(cluster=cluster, seats=m)
                     m = 0
-                    booked.extend(subset_booked)
+                    booked.extend(newSeats)
 
             print("\n\n##########################")
             print(booked)
             print("##########################\n\n")
 
             return { 
-                "Message": "Yay! Seats Booked",
+                "Message": "Yay! Seats Booked 4",
                 "Booked" : booked,
-                "State"  : state
+                "State"  : getState()
             }

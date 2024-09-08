@@ -1,5 +1,8 @@
-def BookInSingleRow(state, row, seats):
+from firebase_utils import getState, getInitialState, setState
 
+def BookInSingleRow(row, seats):
+
+    state = getState()
     begin = -1
 
     if ( row == 11 ):
@@ -9,23 +12,27 @@ def BookInSingleRow(state, row, seats):
 
     state[row] -= seats
 
-    return [ state, list(range( begin, begin + seats )) ]
+    setState(state)
+    return list(range( begin, begin + seats ))
 
-def BookFullCluster(state, cluster):
+def BookFullCluster(cluster):
     
+    state = getState()
     row = cluster
     booked = []
 
     while ( row < 12 and state[row] > 0):
-        [ state, subset_booked ] = BookInSingleRow(state, row, state[row])
-        booked.extend(subset_booked)
+        newSeats = BookInSingleRow(row, state[row])
+        booked.extend(newSeats)
         row += 1
 
-    return [ state, booked ]
+    return booked
 
 
-def BookLargerCluster(state, cluster, seats):
+def BookLargerCluster(cluster, seats):
+
     
+    state = getState()
     row = cluster
     m = seats
     booked = []
@@ -34,11 +41,11 @@ def BookLargerCluster(state, cluster, seats):
         subset_booked = []
         if ( m > state[row] ):
             m -= state[row]
-            [ state, subset_booked ] = BookInSingleRow(state, row, state[row])
+            newSeats = BookInSingleRow(row, state[row])
         else:
-            [ state, subset_booked ] = BookInSingleRow(state, row, m)
+            newSeats = BookInSingleRow(row, m)
             m = 0
-        booked.extend(subset_booked)
+        booked.extend(newSeats)
         row += 1
 
-    return [ state, booked ]
+    return booked
