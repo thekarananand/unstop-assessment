@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from utils import BookInSingleRow, BookFullCluster, BookLargerCluster
 
-# state = [ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 3 ]
-state = [ 0, 2, 1, 0, 1, 2, 1, 0, 0, 0, 2, 0 ]
+state = [ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 3 ]
+# state =   [ 3, 2, 1, 0, 1, 2, 1, 0, 0, 2, 0, 3 ]
 
 app = FastAPI()
 app.add_middleware(
@@ -18,11 +18,14 @@ app.add_middleware(
 class DataScheme(BaseModel):
     SeatsNeeded: int
 
-@app.get("/reset")
+@app.get("/reset/")
 async def reset():
     global state
     state = [ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 3 ]
-    return { "State"  : state }
+    return { 
+        "Booked" : [],
+        "State"  : state
+    }
 
 @app.post("/")
 async def index(RequestBody: DataScheme):
@@ -31,11 +34,15 @@ async def index(RequestBody: DataScheme):
     n = RequestBody.SeatsNeeded
 
     if not ( 1 <= n and n <= 7 ):
-        return { "Error": f'${n} is a valid input' }
+        return {
+            "Message": f'{n} is out of bound input',
+            "Booked" : [],
+            "State"  : state
+        }
     
     if ( sum(state) < n ):
         return {
-            "Error"  : "We don't have Reqiured Capacity",
+            "Message": "We don't have Required Capacity",
             "Booked" : [],
             "State"  : state
         }
@@ -56,6 +63,7 @@ async def index(RequestBody: DataScheme):
         [ state, booked ] = BookInSingleRow(state=state, row=suitable_row, seats=n)
 
         return { 
+            "Message": "Yay! Seats Booked",
             "Booked" : booked,
             "State"  : state
         }
@@ -70,9 +78,10 @@ async def index(RequestBody: DataScheme):
             prefix_sum += state[row]
             if begin == -1 and state[row] != 0:
                 begin = row
-            if (state[row] == 0):
-                clusters[begin]  = prefix_sum
-
+            if ( (prefix_sum != 0) and (state[row] == 0 or (row+1 == len(state))) ):
+                clusters[begin] = prefix_sum
+                prefix_sum = 0
+                begin = -1
 
         clusters = dict(sorted(clusters.items(), key=lambda item: item[1], reverse=True))
 
@@ -83,6 +92,7 @@ async def index(RequestBody: DataScheme):
                 [ state, booked ] = BookFullCluster(state=state, cluster=cluster)
 
                 return { 
+                    "Message": "Yay! Seats Booked",
                     "Booked" : booked,
                     "State"  : state
                 }
@@ -95,9 +105,10 @@ async def index(RequestBody: DataScheme):
             
         if (suitable_single_cluster != -1):
 
-            [ state, booked ] = BookLargerCluster(state=state, cluster=cluster, seats=n)
+            [ state, booked ] = BookLargerCluster(state=state, cluster=suitable_single_cluster, seats=n)
 
             return { 
+                "Message": "Yay! Seats Booked",
                 "Booked" : booked,
                 "State"  : state
             }
@@ -106,18 +117,23 @@ async def index(RequestBody: DataScheme):
         else:
             m = n
             booked = []
+
             for cluster in clusters:
                 if ( clusters[cluster] <= m):
                     m -= clusters[cluster]
                     [ state, subset_booked ] = BookFullCluster(state=state, cluster=cluster)
-                    
                     booked.extend(subset_booked)
                 else:
-                    pass
                     [ state, subset_booked ] = BookLargerCluster(state=state, cluster=cluster, seats=m)
-                    
+                    m = 0
                     booked.extend(subset_booked)
+
+            print("\n\n##########################")
+            print(booked)
+            print("##########################\n\n")
+
             return { 
+                "Message": "Yay! Seats Booked",
                 "Booked" : booked,
                 "State"  : state
             }

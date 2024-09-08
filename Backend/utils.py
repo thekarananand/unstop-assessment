@@ -16,7 +16,7 @@ def BookFullCluster(state, cluster):
     row = cluster
     booked = []
 
-    while (state[row] != 0):
+    while ( row < 12 and state[row] > 0):
         [ state, subset_booked ] = BookInSingleRow(state, row, state[row])
         booked.extend(subset_booked)
         row += 1
@@ -25,15 +25,12 @@ def BookFullCluster(state, cluster):
 
 
 def BookLargerCluster(state, cluster, seats):
-    print("/n/n++++++++++++++++++++++++++++++")
-    print(seats)
-    print("++++++++++++++++++++++++++++++/n/n")
     
     row = cluster
     m = seats
     booked = []
 
-    while ( m != 0):
+    while ( m > 0):
         subset_booked = []
         if ( m > state[row] ):
             m -= state[row]

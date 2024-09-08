@@ -1,0 +1,30 @@
+services:
+  # database:
+  #   container_name: wikinetes-database
+  #   image: mongo
+  #   networks:
+  #     - wikinetes
+
+  backend:
+    container_name: backend
+    build: ./Backend
+    networks:
+      - ticket_man
+    ports:
+      - 6969:80
+    # environment:
+    #   - WIKINETES_DB=wikinetes-database
+
+  # backend:
+  #   container_name: backend
+  #   build: ./Backend
+  #   networks:
+  #     - ticket_man
+  #   ports:
+  #     - 6969:80
+  #   # environment:
+  #   #   - WIKINETES_DB=wikinetes-database
+
+networks:
+  ticket_man:
+    name: ticket_man
