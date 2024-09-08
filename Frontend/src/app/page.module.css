@@ -1,0 +1,108 @@
+.page {
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2ch;
+}
+
+.main > section {
+  border: var(--border);
+  padding: 1.5ch;
+  border-radius: 1;
+  border-radius: 0.5ch;
+
+}
+
+.main > section > h1 {
+  margin-block: 2ch 0.75ch;
+  font-weight: 700;
+  font-size: 1.3em;
+}
+
+.main > section > h2 {
+  margin-bottom: 1.5ch;
+  font-weight: 500;
+  font-size: 1em;
+}
+
+.SeatBooked {
+  list-style: none;
+  display: flex;
+  gap: 0.25em;
+}
+
+.SeatBooked li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  height: 1.5em;
+  border-radius: 15%;
+  border: 1px solid rgb(192, 192, 192, 0.5);
+}
+
+.SeatBooked li span{
+  font-size: 0.75em;
+  font-weight: 700;
+}
+
+
+.BookingBox {
+  grid-column-start: 1;
+  grid-column-end: span 2;
+}
+
+.BookingBox > form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.BookingBox > form > div {
+  display: flex;
+  gap: 1ch;
+  align-items: baseline;
+}
+
+.BookingBox > form input {
+  padding: 0.5ch 1em ;
+  border: var(--border);
+  border-radius: 0.35ch;
+}
+
+.BookingBox > form input[type="submit"],
+.BookingBox > form input[type="button"] {
+  cursor: pointer;
+}
+
+.BookingBox > form input[type="number"] {
+  width: 20ch;
+  background: #151b23;
+}
+
+.BookingBox > form input::-webkit-outer-spin-button,
+.BookingBox > form input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.BookingBox > form input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.btn1 {
+  background: var(--btn-color-1);
+  font-weight: 500;
+}
+
+.btn2 {
+  background: var(--btn-color-2);
+  font-weight: 500;
+}

@@ -1,0 +1,64 @@
+.matrix {
+    display: flex;
+    gap: 0.25em;
+}
+
+.rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+
+.seat {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1;
+    height: 1.5em;
+    border-radius: 15%;
+    border: var(--border);
+}
+
+.seat > span {
+    font-size: 0.75em;
+    font-weight: 700;
+    color: rgb(192, 192, 192);
+}
+
+.booked, .booked > span{
+    background-color: var(--btn-color-1);
+    color: white;
+}
+
+.notAval {
+    background-color: rgba(228, 228, 228, 0.75);
+}
+
+.notAval > span {
+    background-color: transparent;
+    color: black;
+}
+
+
+.MatrixContainer h3 {
+
+    margin-block: 2ch 1ch;
+    font-weight: 500;
+    font-size: 1em;
+}
+
+.MatrixContainer ul {
+    display: grid;
+    gap: 1ch;
+    list-style: none;
+}
+
+.MatrixContainer ul li {
+    display: flex;
+    align-items: baseline;
+}
+
+.MatrixContainer ul li > span {
+    font-size: 0.85em;
+    margin-left: 1ch;
+}

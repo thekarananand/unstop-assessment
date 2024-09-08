@@ -1,0 +1,22 @@
+* {
+  background-color: #0D1117;
+  color: white;
+  padding: 0;
+  margin: 0;
+}
+
+main {
+  font-family: var(--font-inter);
+}
+
+html {
+  color-scheme: dark;
+  min-width: 100vh;
+}
+
+:root {
+  --border: 1px solid rgb(192, 192, 192, 0.5);
+  --btn-color-1: hsl(132, 60%, 33%);
+  --btn-color-2: hsl(0, 60%, 50%);
+
+}
