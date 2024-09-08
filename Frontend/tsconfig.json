@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/Matrix.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/Matrix.jsx", "src/runtime_variables/backend_url.jsx", "src/app/page.jsx", "src/app/layout.jsx"],
   "exclude": ["node_modules"]
 }

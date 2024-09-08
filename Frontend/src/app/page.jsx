@@ -59,7 +59,7 @@ export default function Home() {
                 max="7"
                 value={SeatsNeeded}
                 placeholder="Seats..."
-                onChange={(e:any) => setSeatsNeeded(e.target.value)}
+                onChange={(e) => setSeatsNeeded(e.target.value)}
               />
               <input type="submit" className={styles.btn1} value="Book Ticket" onClick={ (e) => {
                   e.preventDefault();
@@ -87,7 +87,7 @@ export default function Home() {
           </h1>
 
           <ul className={styles.SeatBooked}>
-            { Res?.Booked && Res?.Booked.map( ( seat: number, index: number ) => (
+            { Res?.Booked && Res?.Booked.map( ( seat, index) => (
               <li key={index++}>
                 <span>{seat}</span>
               </li>
