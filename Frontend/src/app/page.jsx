@@ -7,27 +7,24 @@ import Matrix from "@/components/Matrix";
 
 export default function Home() {
 
-  const [Status,      setStatus     ] = useState( "Form" )
   const [Res,         setRes        ] = useState( { "Booked": [], "State": [], "Message": "" })
   const [SeatsNeeded, setSeatsNeeded] = useState()
 
   const Reset = async () => {
-    setStatus( "Loading" );
-         
+   
     const response = await fetch( backend_url+'reset/', { method: "GET" } );
 
     if ( response.ok ) {
       let serverResponse = await response.json();
       setRes( await serverResponse );
-      setStatus( "OK" );
     };
 
   }
 
   const BookTicket = async () => {
 
-    setStatus( "Loading" );
-         
+    console.log(backend_url)
+   
     const response = await fetch( backend_url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -39,7 +36,6 @@ export default function Home() {
     if ( response.ok ) {
         let serverResponse = await response.json();
         setRes( await serverResponse );
-        setStatus( "OK" );
     };
   }
 
@@ -78,13 +74,9 @@ export default function Home() {
 
         <section>
 
-          <h2>
-            Message Box
-          </h2>
+          <h2> Message Box </h2>
           
-          <h1>
-            { Res?.Message}
-          </h1>
+          <h1> { Res?.Message} </h1>
 
           <ul className={styles.SeatBooked}>
             { Res?.Booked && Res?.Booked.map( ( seat, index) => (
