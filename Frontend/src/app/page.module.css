@@ -2,6 +2,8 @@
   min-height: 100vh;
   min-width: 100vw;
   display: flex;
+  flex-direction: column;
+  gap: 4ch;
   justify-content: center;
   align-items: center;
 }
@@ -105,4 +107,17 @@
 .btn2 {
   background: var(--btn-color-2);
   font-weight: 500;
+}
+
+.footer {
+  display: flex;
+  gap: 1ch;
+  align-items: center;
+}
+
+.footer *{
+  font-size: 0.75em;
+  color: rgb(192, 192, 192, 0.95);
+  text-underline-offset: 4px;
+  letter-spacing: 0.01ch;
 }

@@ -94,6 +94,11 @@ export default function Home() {
         </section>
 
       </main>
+      <footer className={styles.footer}>
+        <a href="https://www.github.com/thekarananand/unstop-assessment" target="_blank">
+          View Assessment on GitHub
+        </a> 
+      </footer>
     </div>
   );
 }
